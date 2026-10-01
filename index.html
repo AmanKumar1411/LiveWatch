@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A real-time crypto watchlist powered by Binance market data." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>LiveWatch</title>
+    <script>
+      // Set the theme before first paint so dark-mode users never see a white flash.
+      // Saved choice wins; otherwise follow the OS. Storage can throw (private mode), hence try/catch.
+      (function () {
+        var theme;
+        try {
+          theme = localStorage.getItem('livewatch:theme');
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

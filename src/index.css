@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Components only use these (bg-surface, text-fg, text-up …), so switching
+ * theme is just swapping the variables below; no component knows which theme is active.
+ * Tailwind v4 turns every --color-* into utilities (bg-*, text-*, border-*).
+ */
+@theme {
+  --color-bg: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef1f5;
+  --color-border: #dfe3ea;
+  --color-fg: #0f172a;
+  --color-fg-muted: #586174;
+  --color-accent: #2563eb;
+  --color-accent-fg: #ffffff;
+  --color-up: #047857;
+  --color-down: #c42a3c;
+  --color-warn: #a35a00;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0b0f16;
+  --color-surface: #131924;
+  --color-surface-muted: #1b2331;
+  --color-border: #263042;
+  --color-fg: #e7eaf0;
+  --color-fg-muted: #929cb0;
+  --color-accent: #5b8cff;
+  --color-accent-fg: #0b0f16;
+  --color-up: #34d399;
+  --color-down: #fb7185;
+  --color-warn: #f5b84a;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* ---- Price flash ----
+ * The price cell is keyed by price, so each move remounts the span and replays this
+ * 400ms animation. It costs no state, timers or extra React renders.
+ */
+@keyframes flash-up {
+  from {
+    background-color: color-mix(in srgb, var(--color-up) 28%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+@keyframes flash-down {
+  from {
+    background-color: color-mix(in srgb, var(--color-down) 28%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+.flash-up {
+  animation: flash-up 400ms ease-out;
+}
+.flash-down {
+  animation: flash-down 400ms ease-out;
+}
+
+/* ---- Watchlist: a table on desktop, stacked cards on phones ----
+ * Both layouts share one DOM tree (so one set of memoised rows); only CSS changes.
+ * This lives here rather than in utility classes because it changes table display types.
+ */
+.watchlist th,
+.watchlist td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+.watchlist .cell-price,
+.watchlist .cell-change,
+.watchlist .cell-volume {
+  text-align: right;
+}
+.watchlist .cell-star {
+  width: 3.5rem;
+  padding-block: 0.25rem;
+  text-align: center;
+}
+.watchlist-row {
+  cursor: pointer;
+  border-top: 1px solid var(--color-border);
+  transition:
+    background-color 150ms,
+    opacity 300ms;
+}
+.watchlist-row:hover {
+  background-color: color-mix(in srgb, var(--color-surface-muted) 70%, transparent);
+}
+/* Stale: no update for 10s. Dimmed, but still readable. */
+.watchlist-row[data-stale] {
+  opacity: 0.45;
+}
+
+@media (width < 48rem) {
+  .watchlist,
+  .watchlist tbody {
+    display: block;
+  }
+  .watchlist thead {
+    display: none;
+  }
+  .watchlist-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name star'
+      'price change'
+      'volume volume';
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+  .watchlist .watchlist-row > td {
+    display: block;
+    padding: 0;
+    width: auto;
+    text-align: left;
+  }
+  .watchlist .cell-name {
+    grid-area: name;
+    min-width: 0;
+  }
+  .watchlist .cell-star {
+    grid-area: star;
+  }
+  .watchlist .cell-price {
+    grid-area: price;
+    font-size: 1.125rem;
+  }
+  .watchlist .watchlist-row > .cell-change {
+    grid-area: change;
+    text-align: right;
+  }
+  .watchlist .cell-volume {
+    grid-area: volume;
+  }
+}
+
+/* ---- Price chart ----
+ * Recharts writes colours as SVG attributes; CSS overrides attributes, so the chart
+ * picks up theme tokens without knowing which theme is active.
+ */
+.price-chart .recharts-area-curve {
+  stroke: var(--color-accent);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.price-chart .recharts-area-area {
+  fill: var(--color-accent);
+}
+.price-chart .recharts-cartesian-grid line {
+  stroke: var(--color-border);
+}
+.price-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--color-fg-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.price-chart .recharts-tooltip-cursor {
+  stroke: var(--color-fg-muted);
+  stroke-width: 1;
+}
+.price-chart .recharts-active-dot circle {
+  fill: var(--color-accent);
+  stroke: var(--color-surface);
+}

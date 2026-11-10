@@ -4,8 +4,20 @@ A small real-time crypto watchlist. It streams live Binance prices over one WebS
 
 **React 18 · TypeScript (strict) · Vite · Tailwind CSS v4 · Recharts · React Router · Playwright**
 
-![LiveWatch screenshot](docs/screenshot.png)
-<!-- Placeholder: add a screenshot at docs/screenshot.png (desktop watchlist + a coin page works well). -->
+## Screenshots
+
+The app isn't deployed, so here is what it looks like running locally against live Binance data. To see it yourself, follow [Running it](#running-it).
+
+| Watchlist | Coin detail |
+|---|---|
+| ![Watchlist, light theme](docs/screenshots/watchlist-light.png) | ![Bitcoin detail page, light theme](docs/screenshots/coin-light.png) |
+| ![Watchlist, dark theme](docs/screenshots/watchlist-dark.png) | ![Bitcoin detail page, dark theme](docs/screenshots/coin-dark.png) |
+
+<p>
+  <img src="docs/screenshots/mobile-watchlist.png" alt="Watchlist on mobile" width="260">
+  &nbsp;
+  <img src="docs/screenshots/mobile-coin.png" alt="Ethereum detail page on mobile" width="260">
+</p>
 
 ## What it does
 
